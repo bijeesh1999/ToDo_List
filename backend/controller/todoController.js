@@ -10,8 +10,6 @@ const getAlltodo = async(req,res) => {
     }else{
         res.status(404).json("data not fond ")
     }
-
-
 }
 
 const postTodo = async(req,res) => {
@@ -23,7 +21,7 @@ const postTodo = async(req,res) => {
         task:data.Task,
         description:data.deSc,
         option:data.option,
-        // dueDate:data.date,
+        dueDate:data.expDate,
         updated:false
     })
 
@@ -41,14 +39,36 @@ const editTodo = async(req,res) => {
     const {id}=req.params
     console.log(data,id);
 
-    // const editTodo=await todo.findByIdAndUpdate(id,{
-    //     data
-    // })
-    // if(editTodo){
-    //     res.status(200).json(editTodo)
-    // }else{
-    //     res.status(404).json("error editing data")
-    // }
+    if(data.values === true){
+        console.log(data.values);
+        const update=await todo.findByIdAndUpdate(id,{
+            updated:true
+        })
+        if(update){
+            res.status(200).json(update)
+        }
+    }else if(data.values === false){
+        console.log(data.values);
+        const update=await todo.findByIdAndUpdate(id,{
+            updated:false
+        })
+        if(update){
+            res.status(200).json(update)
+        }
+    }else{
+        const editTodo=await todo.findByIdAndUpdate(id,{
+            task:data.values.Task,
+            description:data.values.deSc,
+            option:data.values.option,
+            dueDate:data.values.expDate
+
+        })
+        if(editTodo){
+            res.status(200).json(editTodo)
+        }else{
+            res.status(404).json("error editing data")
+        }
+    }
 
 }
 
@@ -63,10 +83,18 @@ const deleteTodo = async(req,res) => {
     }else{
         res.status(404).json("deletion error")
     }
+}
+const singleTodo = async(req,res) => {
 
-
-
+    const {id}=req.params
+    console.log(id);
+    const singleTodo=await todo.findById(id)
+    if(singleTodo){
+        res.status(200).json(singleTodo)
+    }else{
+        res.status(404).json("deletion error")
+    }
 }
 
 
-module.exports = {getAlltodo , postTodo , editTodo ,deleteTodo}
+module.exports = {getAlltodo , postTodo , editTodo ,deleteTodo,singleTodo}
